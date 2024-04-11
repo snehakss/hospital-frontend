@@ -29,7 +29,7 @@ const ProfileStaff = () => {
     axios.post("http://localhost:3002/api/profile/add",input).then(
       (response)=>{
         console.log(response.data)
-        if(response.data.status=="success") {
+        if(response.data.status==="success") {
           alert("Submitted Successfully")
         } else {
           alert("Something went wrong")

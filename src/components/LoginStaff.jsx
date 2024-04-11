@@ -17,7 +17,7 @@ const LoginStaff = () => {
 
     const readValues = () => {
         axios.post("http://localhost:3002/api/login/signin", input).then((response) => {
-            if(response.data.status=="success"){
+            if(response.data.status==="success"){
                 navigate("/profilestaff")
             }else{
                 alert(response.data.status)
