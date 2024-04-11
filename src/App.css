@@ -36,3 +36,65 @@
     transform: rotate(360deg);
   }
 }
+
+body {
+  background-color: #ffffff; /* Set a light background color for the body */
+}
+
+.card-header {
+  font-family: 'Brush Script MT', sans-serif; /* Use your custom font, fallback to a sans-serif font if not available */
+  font-style: italic; /* Optionally, set font style to italic */
+}
+
+/* Add other styles as needed */
+
+.card-text {
+  font-family: Georgia, sans-serif;
+  color: rgb(11, 11, 59);
+}
+
+.custom-font {
+  font-family: Georgia, sans-serif;
+}
+
+.-info-bg-subtle {
+  background-color: #1682b4; /* Your desired background color */
+}
+
+.navbar-logo {
+  border-radius: 50%; /* 50% border-radius will create a circle */
+}
+
+.-info-subtle {
+  background-color: #3085ac; /* Your desired background color */
+}
+
+.card-footer {
+  font-family: Times New Roman, sans-serif; /* Use your custom font, fallback to a sans-serif font if not available */
+}
+
+.time-slot-section {
+  margin-top: 20px;
+}
+
+.time-slots {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.btn-outline-secondary {
+  /* Add custom styling for the buttons */
+  color: #6c757d;
+  border-color: #6c757d;
+}
+
+.btn-outline-secondary:hover {
+  /* Add custom styling for hover state */
+  background-color: #f8f9fa;
+}
+
+.btn-outline-secondary:focus {
+  /* Add custom styling for focus state */
+  box-shadow: 0 0 0 0.25rem rgba(108, 117, 125, 0.25);
+}
