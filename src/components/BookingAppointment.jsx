@@ -1,58 +1,14 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import NaviAdmin from './NaviAdmin'
 import axios from 'axios';
 
 const BookingAppointment = () => {
 
-  function TimeSlotPicker() {
-    const [timeSlots, setTimeSlots] = useState(generateTimeSlots());
-  
-    function generateTimeSlots() {
-      const startTime = new Date();
-      startTime.setHours(9, 0, 0, 0); // Set start time to 9:00 AM
-      const endTime = new Date();
-      endTime.setHours(18, 0, 0, 0); // Set end time to 6:00 PM
-  
-      const timeSlots = [];
-      let currentTime = new Date(startTime);
-  
-      while (currentTime <= endTime) {
-        timeSlots.push({
-          time: formatTime(currentTime),
-          disabled: false
-        });
-        currentTime.setMinutes(currentTime.getMinutes() + 20);
-      }
-  
-      return timeSlots;
-    }
-  
-    function formatTime(time) {
-      return time.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
-    }
-  
-    function handleTimeSelection(index) {
-      const updatedTimeSlots = [...timeSlots];
-      updatedTimeSlots[index].disabled = true;
-      setTimeSlots(updatedTimeSlots);
-    }
-  
-    return (
-      <select
-        className="form-control"
-        onChange={(e) => {
-          handleTimeSelection(e.target.selectedIndex - 1);
-        }}
-      >
-        <option value="" disabled>Select a time</option>
-        {timeSlots.map((slot, index) => (
-          <option key={index} value={slot.time} disabled={slot.disabled}>
-            {slot.time}
-          </option>
-        ))}
-      </select>
-    );
-  }
+  const [departments, setDepartments] = useState([]);
+  const [doctors, setDoctors] = useState([]);
+  const [selectedTimeSlot, setSelectedTimeSlot] = useState("");
+  const [selectedDoctor, setSelectedDoctor] = useState("");
+
 
 
     const [input,setInput]=new useState(
@@ -71,19 +27,50 @@ const BookingAppointment = () => {
         }
     )
 
+
+    const timeSlots = [
+      "9:00 am",
+      "9:20 am",
+      "9:40 am",
+      "10:00 am",
+      "10:20 am",
+      "10:40 am",
+      "11:00 am",
+      "2:00 pm",
+      "2:20 pm",
+      "2:40 pm",
+      "3:00 pm",
+      "3:20 pm",
+      "3:40 pm",
+      "4:00 pm",
+    ];
+
+    const fetchDepartement = () => {
+      axios.get("http://localhost:3002/api/profile/viewall").then((response) => {
+        const doctors = response.data.data.map((data) => data.Name);
+        const uniqueDoctors = Array.from(new Set(doctors));
+        setDoctors(uniqueDoctors);
+        const department = response.data.data.map((data) => data.Department);
+        const uniqueDepartment = Array.from(new Set(department));
+        setDepartments(uniqueDepartment);
+      });
+    };
+    useEffect(() => {
+      fetchDepartement();
+    }, []);
+  
+    const handleTimeSlotSelect = (timeSlot) => {
+      setSelectedTimeSlot(timeSlot);
+    };
+  
+    const handleDoctorSelect = (doctorId) => {
+      setSelectedDoctor(doctorId);
+    };
+
     const inputHandler = (event) => {
       const { name, value } = event.target;
-      if (name === "Time") {
-          // For Time field, value is directly provided, no need to change
-          setInput({ ...input, [name]: value });
-      } else if (name === "Paymentstatus") {
-          // For Paymentstatus field, value is available in event.target.value
-          setInput({ ...input, [name]: event.target.value });
-      } else {
-          // For other form fields, handle as usual
-          setInput({ ...input, [name]: value });
-      }
-  };
+      setInput({ ...input, [name]: value });
+    };
   
       
 
@@ -141,16 +128,47 @@ const BookingAppointment = () => {
                         </div>
                         <div className="col col-12 col-sm-6 col-md-6 col-lg-6 col-xl-6 col-xxl-6 g-flex">
                             <label htmlFor="" className="form-label">Time</label>
-                        <TimeSlotPicker/>
+                        
                         </div>
-                        <div className="col col-12 col-sm-6 col-md-6 col-lg-6 col-xl-6 col-xxl-6 g-flex">
-                            <label htmlFor="" className="form-label">Department</label>
-                            <input type="text" className="form-control" name="Department" value={input.Department} onChange={inputHandler}/>
-                        </div>
-                        <div className="col col-12 col-sm-6 col-md-6 col-lg-6 col-xl-6 col-xxl-6 g-flex">
-                            <label htmlFor="" className="form-label">Doctor Name</label>
-                            <input type="text" className="form-control" name="DoctorName" value={input.DoctorName} onChange={inputHandler}/>
-                        </div>
+                        <div className="col-lg-6">
+                <label htmlFor="" className="form-label">
+                  Department
+                </label>
+                <select
+                  name="Department"
+                  className="form-control"
+                  value={input.Department}
+                  onChange={inputHandler}
+                >
+                  <option value="">Select Department</option>
+                  {departments.map((department, index) => (
+                    <option key={index} value={department}>
+                      {department}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              <div className="col col-12 col-sm-12 col-md-6 col-lg-6 col-xl-6 col-xxl-6">
+                <label htmlFor="doctorName" className="form-label">
+                  Doctor's Name
+                </label>
+                <select
+                  id="doctorName"
+                  className="form-control"
+                  onChange={(e) => handleDoctorSelect(e.target.value)}
+                  name="doctor"
+                  value={input.doctor}
+                >
+                  <option value="">Select Doctor</option>
+                  {doctors.map((doctors, index) => {
+                    return (
+                      <option key={index} value={doctors}>
+                        {doctors}
+                      </option>
+                    );
+                  })}
+                </select>
+              </div>
                         <div className="col col-12 col-sm-6 col-md-6 col-lg-6 col-xl-6 col-xxl-6 g-flex">
                             <label htmlFor="" className="form-label">Phone number</label>
                             <input type="text" className="form-control" name="PhoneNumber" value={input.PhoneNumber} onChange={inputHandler}/>
@@ -167,6 +185,36 @@ const BookingAppointment = () => {
                             <label htmlFor="" className="form-label">Purpose of the visit</label>
                             <input type="text" className="form-control" name="Purposeofthevisit" value={input.Purposeofthevisit} onChange={inputHandler}/>
                         </div>
+                        <div className="col-lg-6">
+                <label htmlFor="" className="form-label">
+                  Appointment Date
+                </label>
+                <input
+                  type="date"
+                  name="Apdate"
+                  className="form-control"
+                  value={input.Apdate}
+                  onChange={inputHandler}
+                />
+              </div>
+              <div className="col-lg-6">
+                <label htmlFor="" className="form-label">
+                  Time Slot
+                </label>
+                <select
+                  name="Time"
+                  className="form-control"
+                  value={input.Time}
+                  onChange={inputHandler}
+                >
+                  <option value="">Select Time Slot</option>
+                  {timeSlots.map((slot) => (
+                    <option key={slot} value={slot}>
+                      {slot}
+                    </option>
+                  ))}
+                </select>
+              </div>
                         <center>
                         <div className="col col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12 col-xxl-12 g-flex">
                             <button className="btn btn-success" onClick={readValues}>Book Appointment</button>
