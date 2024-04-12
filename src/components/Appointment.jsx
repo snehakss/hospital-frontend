@@ -20,23 +20,51 @@ const Appointment = () => {
     Paymentstatus: "",
     Purposeofthevisit: "",
   });
+  const [timeSlots, setTimeSlots] = useState([
+    { time: "9:00am", available: true },
+    { time: "9:20am", available: true },
+    { time: "9:40am", available: true },
+    { time: "10:00am", available: true },
+    { time: "10:20am", available: true },
+    { time: "10:40am", available: true },
+    { time: "11:00am", available: true },
+    { time: "12:20pm", available: true },
+    { time: "2:00pm", available: true },
+    { time: "2:20pm", available: true },
+    { time: "2:40pm", available: true },
+    { time: "3:00pm", available: true },
+    { time: "3:20pm", available: true },
+    { time: "3:40pm", available: true },
+    { time: "4:00pm", available: true },
+  ]);
 
-  const timeSlots = [
-    "9:00 am",
-    "9:20 am",
-    "9:40 am",
-    "10:00 am",
-    "10:20 am",
-    "10:40 am",
-    "11:00 am",
-    "2:00 pm",
-    "2:20 pm",
-    "2:40 pm",
-    "3:00 pm",
-    "3:20 pm",
-    "3:40 pm",
-    "4:00 pm",
-  ];
+  const fetchBooking = () => {
+    axios
+      .get("http://localhost:3002/api/booking/viewall")
+      .then((response) => {
+        // Extract booked time slots from API response
+        const bookedTimeSlots = response.data.data.map((data) => data.Time);
+        console.log("booked",bookedTimeSlots)
+
+        // Update availability of time slots based on booked time slots
+        const updatedTimeSlots = timeSlots.map((timeslot) => ({
+          time: timeslot.time,
+          available: !bookedTimeSlots.includes(timeslot.time), // Set available to false if the time is booked
+        }));
+
+        // Update state with updated time slots
+        setTimeSlots(updatedTimeSlots);
+      })
+      .catch((error) => {
+        console.error("Error fetching API data:", error);
+      });
+  };
+
+  useEffect(() => {
+    fetchBooking();
+  }, []);
+  console.log(timeSlots);
+  console.log("input",input)
 
   // Fetch all departments and doctors data from API
   const fetchDepartement = () => {
@@ -253,9 +281,13 @@ const Appointment = () => {
                   onChange={inputHandler}
                 >
                   <option value="">Select Time Slot</option>
-                  {timeSlots.map((slot) => (
-                    <option key={slot} value={slot}>
-                      {slot}
+                  {timeSlots.map((timeslot, index) => (
+                    <option
+                      key={index}
+                      value={timeslot.time}
+                      disabled={!timeslot.available}
+                    >
+                      {timeslot.time}
                     </option>
                   ))}
                 </select>
