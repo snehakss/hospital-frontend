@@ -182,7 +182,11 @@ const Home = () => {
         </div>
       </div>
     </div>
-  </div>
+    {/* <img height="50"
+              width="50"
+              src="https://toppng.com/uploads/preview/facebook-logo-white-11549845815wclpvkfdsb.png" className="card-img" alt="..."/>
+   */}
+   </div>
 </div>
 
 

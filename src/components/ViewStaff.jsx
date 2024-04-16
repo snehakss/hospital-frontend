@@ -6,14 +6,17 @@ const ViewStaff = () => {
 
   const [data,setData]=new useState([])
 
-  const getData=()=>{
-    axios.get("http://localhost:3002/api/profile/viewall").then(
-      (response)=>{
-        setData(response.data)
-      }
-    )
-  }
-  useEffect(()=>{getData()},[])
+  useEffect(() => {
+    const fetchData = async () => {
+        try {
+            const response = await axios.get("http://localhost:3002/api/profile/viewall");
+            setData(response.data.data); // Update state with fetched data array
+        } catch (error) {
+            console.error("Error fetching data:", error);
+        }
+    };
+    fetchData();
+}, []);
   return (
     <div>
         <NaviAdmin/>
@@ -40,10 +43,10 @@ const ViewStaff = () => {
     </tr>
   </thead>
   <tbody>
-   {
-    data.map(
-      (value,index)=>{
-        return  <tr>
+   
+    {data && data.map((value, index) => (
+      <tr key={index}>
+    
         <td>{value.Name}</td>
         <td>{value.Age}</td>
         <td>{value.Address}</td>
@@ -53,9 +56,9 @@ const ViewStaff = () => {
         <td>{value.email}</td>
         <td>{value.Designation}</td>
       </tr>
-      }
-    )
-   }
+      ))}
+    
+
    
   </tbody>
 </table>
